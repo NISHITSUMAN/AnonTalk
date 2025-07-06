@@ -1,8 +1,4 @@
-// public/script.js
-const socket = io({
-  path: "/api/socket.io",
-});
-
+const socket = io("https://anontalk-oqh5.onrender.com");
 
 const messages = document.getElementById("messages");
 const messageForm = document.getElementById("message-form");
