@@ -1,23 +1,7 @@
 {
   "name": "anontalk",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "dependencies": {
-    "express": "^5.1.0",
-    "socket.io": "^4.8.1"
-  }
-}
-{
-  "name": "anontalk",
-  "version": "1.0.0",
+  "description": "Anonymous chat app",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
