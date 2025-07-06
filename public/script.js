@@ -1,5 +1,8 @@
 // public/script.js
-const socket = io();
+const socket = io({
+  path: "/api/socket.io",
+});
+
 
 const messages = document.getElementById("messages");
 const messageForm = document.getElementById("message-form");
