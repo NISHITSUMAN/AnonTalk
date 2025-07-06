@@ -1,0 +1,136 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>💬 AnonTalk</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Firebase Core -->
+<script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-app-compat.js"></script>
+<!-- Firebase Auth -->
+<script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-auth-compat.js"></script>
+<!-- Firebase Firestore -->
+<script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-firestore-compat.js"></script>
+
+</head>
+<body>
+
+  <<div class="chat-container">
+  <!-- MOVE THE BAR INSIDE HERE -->
+  <div id="top-bar">
+    <span id="username-label">Welcome, <strong id="username">...</strong></span>
+    <span id="user-count">— 0 online</span>
+    <button id="theme-toggle">🌗</button>
+  </div>
+
+  <div class="chat-header">💬 AnonTalk | <span id="user-title">Anon_4032</span></div>
+
+  <!-- Rest of chat UI -->
+</div>
+
+  <div id="chat-container">
+    <div id="chat-header">
+      💬 AnonTalk <span id="user-count">— 0 online</span>
+      <button id="theme-toggle">🌓</button>
+    </div>
+
+    <div id="messages"></div>
+
+    <form id="message-form">
+      <input id="message-input" type="text" placeholder="Type a message..." />
+      <button type="button" id="emoji-button">😊</button>
+      <button type="submit">Send</button>
+    </form>
+
+    
+<div id="emoji-panel" style="display:none; position:absolute; bottom:70px; right:20px; background:white; border:1px solid #ccc; padding:10px; border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,0.1); z-index:999;"></div>
+
+
+
+  </div>
+<!-- Firebase Core -->
+<script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-app-compat.js"></script>
+<!-- Firebase Auth -->
+<script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-auth-compat.js"></script>
+<!-- Firebase Firestore -->
+<script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-firestore-compat.js"></script>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+ const firebaseConfig = {
+    apiKey: "AIzaSyDVJCsmNsg2BWEK4IEjY8cQKXl2V6HdcWo",
+    authDomain: "anontalk-d3ffe.firebaseapp.com",
+    projectId: "anontalk-d3ffe",
+    storageBucket: "anontalk-d3ffe.firebasestorage.app",
+    messagingSenderId: "476460600257",
+    appId: "1:476460600257:web:5fde9b95a32bf06910bd40",
+    measurementId: "G-TVY7Z45TP8"
+  };
+
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  let currentUser = null;
+
+  // Anonymous Login
+  firebase.auth().signInAnonymously()
+    .then((res) => {
+      currentUser = res.user;
+
+      // Assign anonymous username
+      const username = "Anon_" + Math.floor(1000 + Math.random() * 9000);
+
+      // Save to Firestore
+      db.collection("users").doc(currentUser.uid).set({
+        username: username,
+        createdAt: new Date()
+      }, { merge: true });
+
+      console.log("✅ Signed in anonymously as:", username);
+      document.getElementById("chat-header").innerText = "💬 AnonTalk | " + username;
+
+      // Store for use in chat
+      window.username = username;
+    })
+    .catch((err) => {
+      console.error("❌ Login error:", err);
+    });
+</script>
+  <!-- 🔥 Ping Sound -->
+  <audio id="ping" src="ping.mp3" preload="auto"></audio>
+
+  <!-- 💬 Socket.io + Script -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="script.js" defer></script>
+
+  <!-- Load emoji-picker-element globally -->
+  <script src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1.6.2/dist/emoji-picker.min.js"></script>
+
+  <script>
+    const picker = document.createElement('emoji-picker');
+    picker.style.position = 'absolute';
+    picker.style.bottom = '70px';
+    picker.style.right = '20px';
+
+    picker.addEventListener('emoji-click', event => {
+      document.getElementById('message-input').value += event.detail.unicode;
+    });
+
+    document.getElementById('emoji-button').addEventListener('click', () => {
+      if (!document.body.contains(picker)) {
+        document.body.appendChild(picker);
+      } else {
+        picker.remove();
+      }
+    });
+
+    console.log("✅ Emoji picker initialized");
+  </script>
+  </script>
+</body>
+
+</html>
