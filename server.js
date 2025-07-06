@@ -19,8 +19,8 @@ function broadcastUserCount() {
   io.emit("user-count", count);
 }
 
-// Serve static frontend
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static("public"));
+
 
 io.on("connection", (socket) => {
   const username = `Anon_${Math.floor(1000 + Math.random() * 9000)}`;
