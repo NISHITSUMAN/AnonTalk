@@ -57,7 +57,6 @@ io.on("connection", (socket) => {
   });
 });
 
-// ✅ Important for Render
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`✅ AnonTalk running at http://localhost:${PORT}`);
