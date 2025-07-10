@@ -6,7 +6,6 @@ const messageInput = document.getElementById("message-input");
 
 let username = null;
 
-// Wait for Firebase auth to initialize
 firebase.auth().onAuthStateChanged(async (user) => {
   if (user) {
     const db = firebase.firestore();
@@ -20,10 +19,9 @@ firebase.auth().onAuthStateChanged(async (user) => {
       await userDocRef.set({ username, createdAt: new Date() });
     }
 
-    // Send username to server
     socket.emit("register-user", username);
 
-    // Display username in chat header
+ 
     const chatHeader = document.getElementById("chat-header");
     if (chatHeader) chatHeader.innerText = `💬 AnonTalk | ${username}`;
   } else {
@@ -42,7 +40,7 @@ socket.on("assign-name", (name) => {
 
 
 
-// ✅ Receive chat messages
+
 socket.on("chat-message", ({ name, message }) => {
   addMessage(`${name}: ${message}`, name === username ? "self" : "");
   if (name !== username) {
@@ -50,23 +48,22 @@ socket.on("chat-message", ({ name, message }) => {
   }
 });
 
-// ✅ System messages
+
 socket.on("system-message", (msg) => {
   addMessage(msg, "system");
 });
 
-// ✅ Typing indicator
+
 socket.on("typing", (name) => {
   showTyping(`${name} is typing...`);
 });
 
-// ✅ Online users count
+
 socket.on("user-count", (count) => {
   const span = document.getElementById("user-count");
   if (span) span.innerText = `— ${count} online`;
 });
 
-// ✅ Send message
 messageForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const msg = messageInput.value.trim();
@@ -76,7 +73,7 @@ messageForm.addEventListener("submit", (e) => {
   stopTyping();
 });
 
-// ✅ Detect typing
+
 messageInput.addEventListener("input", () => {
   if (!typing) {
     typing = true;
@@ -108,7 +105,6 @@ function addMessage(msg, type = "") {
 }
 
 
-// ✅ Typing UI
 function showTyping(msg) {
   let typingEl = document.querySelector(".typing-indicator");
   if (!typingEl) {
@@ -120,12 +116,11 @@ function showTyping(msg) {
   setTimeout(() => typingEl.remove(), 1500);
 }
 
-// ✅ Theme toggle
 document.getElementById("theme-toggle").addEventListener("click", () => {
   document.body.classList.toggle("light");
 });
 
-// ✅ Simple Emoji Picker
+
 const emojiPanel = document.getElementById("emoji-panel");
 const emojiButton = document.getElementById("emoji-button");
 
