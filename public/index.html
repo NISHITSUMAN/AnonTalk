@@ -16,7 +16,7 @@
 </head>
 <body>
 
-  <<div class="chat-container">
+  <div class="chat-container">
 
   <div id="top-bar">
     <span id="username-label">Welcome, <strong id="username">...</strong></span>
@@ -36,11 +36,16 @@
     </div>
 
     <div id="messages"></div>
+      <input type="file" id="file-input" multiple style="display:none" />
+      <button id="upload-button">📎 Add File</button>
 
     <form id="message-form">
       <input id="message-input" type="text" placeholder="Type a message..." />
       <button type="button" id="emoji-button">😊</button>
       <button type="submit">Send</button>
+      
+
+
     </form>
 
     
@@ -102,33 +107,16 @@
 </script>
 
   <audio id="ping" src="ping.mp3" preload="auto"></audio>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.42.3/dist/umd/supabase.min.js"></script>
 
 
   <script src="/socket.io/socket.io.js"></script>
-  <script src="script.js" defer></script>
+  <script type="module" src="/script.js"></script>
 
 
-  <script src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1.6.2/dist/emoji-picker.min.js"></script>
 
-  <script>
-    const picker = document.createElement('emoji-picker');
-    picker.style.position = 'absolute';
-    picker.style.bottom = '70px';
-    picker.style.right = '20px';
 
-    picker.addEventListener('emoji-click', event => {
-      document.getElementById('message-input').value += event.detail.unicode;
-    });
-
-    document.getElementById('emoji-button').addEventListener('click', () => {
-      if (!document.body.contains(picker)) {
-        document.body.appendChild(picker);
-      } else {
-        picker.remove();
-      }
-    });
-
-    console.log("✅ Emoji picker initialized");
+  
   </script>
   </script>
 </body>

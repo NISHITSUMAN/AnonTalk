@@ -3,6 +3,12 @@ const socket = io("https://anontalk-oqh5.onrender.com");
 const messages = document.getElementById("messages");
 const messageForm = document.getElementById("message-form");
 const messageInput = document.getElementById("message-input");
+const uploadBtn = document.getElementById("upload-button");
+const fileInput = document.getElementById("file-input");
+const supabase = window.supabase.createClient(
+  'https://xnztglgkgfwggeljkprn.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhuenRnbGdrZ2Z3Z2dlbGprcHJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIyOTk3MzQsImV4cCI6MjA2Nzg3NTczNH0.F6SRfBocLNp6xCOVCChPlW7M6DG7vuF7fyU7kswVBJ8'
+);
 
 let username = null;
 
@@ -99,10 +105,25 @@ function addMessage(msg, type = "") {
     el.classList.add("system");
   }
 
-  el.innerText = msg;
+  
+  if (msg.startsWith("[file]")) {
+    const [label, link] = msg.replace("[file]", "").split("|");
+    el.innerHTML = `
+  📎 <strong>${label}</strong>: 
+  <a href="${link}" download target="_blank" style="color: #00c896;">Download</a>
+`;
+
+  } 
+  
+  else {
+    el.innerHTML = msg;
+  }
+
   messages.appendChild(el);
   messages.scrollTop = messages.scrollHeight;
 }
+
+
 
 
 function showTyping(msg) {
@@ -150,5 +171,39 @@ emojiButton.addEventListener("click", () => {
 document.addEventListener("click", (e) => {
   if (!emojiPanel.contains(e.target) && e.target !== emojiButton) {
     emojiPanel.style.display = "none";
+  }
+});
+uploadBtn.addEventListener("click", () => fileInput.click());
+
+fileInput.addEventListener("change", async () => {
+  const files = fileInput.files;
+  if (!files.length) return;
+
+  for (const file of files) {
+    const fileName = `${Date.now()}_${file.name}`;
+
+    try {
+      const { error } = await supabase.storage
+        .from("chat-files")
+        .upload(fileName, file);
+
+      if (error) throw error;
+
+      const publicUrl = `https://xnztglgkgfwggeljkprn.supabase.co/storage/v1/object/public/chat-files/${fileName}`;
+
+      let fileMsg = "";
+
+      if (file.type.startsWith("image/")) {
+        fileMsg = `🖼️ ${file.name}: <a href="${publicUrl}" target="_blank"><img src="${publicUrl}" alt="${file.name}" style="max-width:150px; display:block; margin-top:5px;"></a>`;
+      } else {
+        fileMsg = `📎 <strong>${file.name}</strong>: <a href="${publicUrl}" target="_blank">Download</a>`;
+      }
+
+      socket.emit("chat-message", fileMsg);
+      messageInput.focus();
+    } catch (err) {
+      console.error("❌ Upload error:", err.message);
+      alert("Upload failed: " + err.message);
+    }
   }
 });
